@@ -4,28 +4,28 @@
 
 ## 1. State right now
 
-- New, empty project: only `AGENTS.md`, `CLAUDE.md`, `handoff.md`,
-  `tokens.txt` and `tools/token_usage.py`. Not a git repo yet.
-- Decisions made: separate site; ziglang.in stack (Astro 7, MDX, CodeMirror,
-  Playwright, GitHub Pages); full route (the browser runs the Zig port, gated
-  against C); domain not chosen. Details: AGENTS.md.
+- Git repo on `main`, pushed to the public GitHub repo
+  https://github.com/algorisys-oss/raylib-zig-web (same org as the port,
+  algorisys-oss/raylib-zig-port). First commit: 163055a.
+- Contents: `AGENTS.md`, `CLAUDE.md`, `handoff.md`, `tokens.txt`,
+  `tools/token_usage.py`, `.gitignore`. No site code yet; no gates yet.
+- Not done: GitHub Pages is not enabled, no domain. Both need the owner's
+  go-ahead (AGENTS.md "Rules").
 - raylib-zig (the port) is green and pushed; it builds only for desktop
   GLFW + OpenGL 3.3 today.
 
-## 2. What happened before this repo existed
+## 2. What this run did
 
-- Planning was done in the raylib-zig session of 2026-10-16: feasibility
-  check (emsdk 6.0.4 at ~/emsdk, Zig 0.18 `wasm32-emscripten`, lane-dodger on
-  ziglang.in already runs raylib in the browser), then these files.
+- Read the handoff; `git init`, initial commit, created the public repo
+  under algorisys-oss (the owner chose it) and pushed `main`.
 
 ## 3. Next step
 
-1. `git init` here (ask the owner whether a GitHub repo should be created).
-2. In raylib-zig: read its `handoff.md`, then phase W step 1 from AGENTS.md:
+1. In raylib-zig: read its `handoff.md`, then phase W step 1 from AGENTS.md:
    `core_basic_window` running in the browser from the Zig port, using
    lane-dodger's `addWeb` as the template.
-3. Continue with AGENTS.md "Next steps when work starts".
+2. Continue with AGENTS.md "Next steps when work starts".
 
 ## 4. Open issues
 
-- None yet.
+- None.
