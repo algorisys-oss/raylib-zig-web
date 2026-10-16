@@ -28,6 +28,9 @@ const nav = [
   { label: "About", href: `${base}/about/` },
 ];
 const canonical = new URL(current, Astro.site).href;
+/** The site this one lives under (www.ziglang.in/raylib/). Same host, so it
+    stays in the same tab; the middleware only opens other sites in a new one. */
+const HOME_SITE = "https://www.ziglang.in/";
 ---
 
 <!doctype html>
@@ -48,6 +51,7 @@ const canonical = new URL(current, Astro.site).href;
   <body>
     <header class="topbar">
       <div class="wrap">
+        <a class="back" href={HOME_SITE} title="Back to ziglang.in, the Zig guide">← ziglang.in</a>
         <a class="brand" href={`${base}/`}>raylib<span>-zig</span></a>
         <ul class="nav">
           {
@@ -91,7 +95,10 @@ const canonical = new URL(current, Astro.site).href;
           (<a href="https://github.com/raysan5">@raysan5</a>) and contributors, under the zlib/libpng license.
           The examples keep their original license and authors.
         </p>
-        <p>This website is Vibe Architected by Rajesh Pillai.</p>
+        <p>
+          Part of <a href={HOME_SITE}>ziglang.in</a>, a Zig guide where every snippet is compiled and run on Zig
+          master. This website is Vibe Architected by Rajesh Pillai.
+        </p>
       </div>
     </footer>
     <script>

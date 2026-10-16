@@ -117,6 +117,20 @@ pre {
   flex-wrap: wrap;
 }
 
+.back {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.back:hover {
+  color: var(--text);
+  border-color: var(--muted);
+}
+
 .brand {
   font-weight: 700;
   color: var(--text);
