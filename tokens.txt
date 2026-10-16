@@ -11,5 +11,8 @@
 7	2026-10-16	16:54:49	16:54:56	4	1054	977864	1084	980006	111927863	Q: no Astro project yet? (answer)
 8	2026-10-16	16:55:26	(in progress)	322	238241	86683612	166300	87088475	199016338	Astro site scaffold (home/gallery/example/about, e2e); va_list fix (ReleaseFast 1/1); commits
 # Row 8 ran on to 17:52 (tools/publish-gh-pages.sh, gh-pages 04475bb), then the session disconnected; its final count is in that transcript and was not recounted. Row 9 is a new session.
-9	2026-10-16	18:07:34	(in progress)	208	290580	11604650	42317	11937755	210954093	Resume: shapes browser gate 46/46 (raygui web flags), e2e runs all 46 demo pages, ziglang.in link to /raylib/
+9	2026-10-16	18:07:34	18:48:13	232	296851	13273394	49127	13619604	212635942	Resume: shapes browser gate 46/46 (raygui web flags), e2e runs all demo pages, ziglang.in link
+10	2026-10-16	19:17:33	19:20:57	16	5654	1140870	3890	1150430	213786372	Pushed three repos; gh-pages 320cff6 (46 demos)
+11	2026-10-16	19:37:40	19:37:58	12	3524	874539	2891	880966	214667338	Note: raylib-zig updated in parallel (memory saved)
+12	2026-10-16	22:38:25	(in progress)	306	332991	27633728	75711	28042736	242710074	After round 2: textures 78/78 (to_image excluded), par_shapes f32 fix, fatal link warnings; gh-pages 6245362
 # Subagents: none used.
