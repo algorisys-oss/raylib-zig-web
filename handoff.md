@@ -4,20 +4,18 @@
 
 ## 1. State right now
 
-- This repo: main at 19f5e63 plus this handoff/tokens commit, **not pushed**
-  (origin/main is 30707b6). `npm run sync`, `astro build` and `npm run e2e`
+- This repo: main pushed (all commits up to this handoff). `npm run sync`, `astro build` and `npm run e2e`
   pass under `BASE_PATH=/raylib/ SITE_URL=https://www.ziglang.in`; e2e now
   starts all 46 example pages that have a browser build (46/46 run).
 - `public/examples/` holds the 46 demos from raylib-zig `zig build webdemos
   -Doptimize=ReleaseFast` (gitignored).
-- gh-pages: 04475bb, published from 30707b6 by `tools/publish-gh-pages.sh`
-  in the previous session. It has only core_basic_window as a demo. Not
-  republished this run (needs the owner's go-ahead).
-- raylib-zig: 0dba149, **not pushed**. Browser gate `zig build webexamples
+- gh-pages: 320cff6, published from 6d1ab87 by `tools/publish-gh-pages.sh`
+  (owner go-ahead): 46 demos.
+- raylib-zig: 0dba149 + handoff commits, pushed. Browser gate `zig build webexamples
   -Demsdk=$HOME/emsdk`: **46/46** (core_basic_window + all 45 shapes), Debug
   and ReleaseFast. Desktop apiexamples re-run green for the 8 examples whose
   sources changed.
-- zig-guide (ziglang.in): `dev` at 669ba42, **not pushed** (ahead 1). Adds a
+- zig-guide (ziglang.in): `dev` at 669ba42, pushed. Adds a
   "raylib-zig" link to `/raylib/` in the top bar, phone menu and footer. Its
   full e2e passed (317 links, 0 broken) with the sub-site fetched. `dev` also
   carries the owner's unshipped paint work, so shipping is the owner's call.
@@ -34,8 +32,8 @@
 
 ## 3. Next step
 
-1. Ask the owner: push raylib-zig, this repo and zig-guide dev; republish
-   gh-pages (`tools/publish-gh-pages.sh`) so /raylib/ gets the 45 shapes demos.
+1. After the owner ships zig-guide dev to main: check www.ziglang.in/raylib/
+   loads, a shapes demo runs, and the top-bar link is there.
 2. Grow the browser gate: textures, then text (raylib-zig `web_examples`).
 3. GLSL version as one comptime constant for the web, then shaders.
 4. Phase S pages: API reference, cheatsheet (JSON from gen_api.py), getting
