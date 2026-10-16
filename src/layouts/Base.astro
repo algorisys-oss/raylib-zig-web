@@ -1,0 +1,101 @@
+---
+/**
+ * Every page: top bar, main column, and the footer that says whose work
+ * raylib is. The site is unofficial and every page has to say so (AGENTS.md).
+ */
+import "../styles/global.css";
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  crumbs?: Crumb[];
+}
+
+const { title, description, crumbs = [] } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const SITE_NAME = "raylib-zig";
+const headTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
+const metaDescription =
+  description ?? "raylib-zig: raylib 6.2 ported to Zig. Every example runs in your browser from the Zig port.";
+const current = Astro.url.pathname;
+const nav = [
+  { label: "Examples", href: `${base}/examples/` },
+  { label: "About", href: `${base}/about/` },
+];
+const canonical = new URL(current, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{headTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonical} />
+    <script is:inline>
+      try {
+        const t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="wrap">
+        <a class="brand" href={`${base}/`}>raylib<span>-zig</span></a>
+        <ul class="nav">
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href} aria-current={current.startsWith(item.href) ? "page" : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <span class="spacer"></span>
+        <a class="nav-gh" href="https://github.com/algorisys-oss/raylib-zig-port">GitHub</a>
+        <button class="theme-toggle" type="button" hidden></button>
+      </div>
+    </header>
+    <main class="wrap">
+      {
+        crumbs.length > 0 && (
+          <nav class="crumbs" aria-label="Breadcrumb">
+            <a href={`${base}/`}>Home</a>
+            {crumbs.map((c) => (
+              <>
+                {" / "}
+                {c.href ? <a href={c.href}>{c.label}</a> : <span>{c.label}</span>}
+              </>
+            ))}
+          </nav>
+        )
+      }
+      <slot />
+    </main>
+    <footer class="footer">
+      <div class="wrap">
+        <p>
+          raylib-zig is an unofficial port. It is not raylib.com and is not made by the raylib project.
+        </p>
+        <p>
+          <a href="https://www.raylib.com">raylib</a> is created by Ramon Santamaria
+          (<a href="https://github.com/raysan5">@raysan5</a>) and contributors, under the zlib/libpng license.
+          The examples keep their original license and authors.
+        </p>
+        <p>This website is Vibe Architected by Rajesh Pillai.</p>
+      </div>
+    </footer>
+    <script>
+      import "../scripts/theme.ts";
+    </script>
+  </body>
+</html>

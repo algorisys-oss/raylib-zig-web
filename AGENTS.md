@@ -36,9 +36,15 @@ in this repo.
 3. **The full route**: port raylib's web backend and WebGL 2 path to Zig, and
    verify every browser example against C. Shipping upstream C raylib as the
    demos is rejected (the site would not be showing raylib-zig).
-4. **Domain: not chosen yet.** Build for a GitHub Pages project URL with
-   `BASE_PATH`/`SITE_URL` env vars (as ziglang.in does) so a custom domain is
-   a config change later. Ask the owner before the first public deploy.
+4. **Address: www.ziglang.in/raylib** (owner, 2026-10-16). Build with
+   `BASE_PATH=/raylib/` and `SITE_URL=https://www.ziglang.in` (www is
+   ziglang.in's canonical host; its CNAME). This repo publishes `dist/` to
+   its own `gh-pages`. GitHub Pages cannot serve another repo's Pages under a
+   path of a project site's custom domain (www.ziglang.in belongs to
+   rajeshpillai/zig-guide), so how `/raylib` is wired is still open: the
+   proposal is that ziglang.in's CI copies this repo's `gh-pages` into
+   `web/dist/raylib/` before it publishes. Ask the owner before the first
+   public deploy and before touching the zig-guide repo.
 
 ## Related repositories and tools
 

@@ -1,0 +1,160 @@
+---
+/**
+ * One example, running in the browser from the Zig port.
+ *
+ * Nothing downloads until the reader presses Run: most people who open an
+ * example page came to read the code. The click is also the user gesture a
+ * browser wants before audio may start. (Same pattern as LaneDodger.astro on
+ * ziglang.in, including the plain <script> tag: Vite rewrites `import()` even
+ * for files under public/.)
+ *
+ * The build is raylib-zig's: the Zig-API translation linked against the Zig
+ * library, compiled for wasm32-emscripten, copied into public/examples/ by
+ * `npm run sync`. When there is no build yet the frame says so.
+ *
+ * The canvas needs an id: raylib's web backend finds its canvas by CSS
+ * selector ("#" + id), as upstream's shell.html does with id="canvas". One
+ * example per page, so the id is fixed.
+ */
+import { hasWebBuild, type Example } from "../examples";
+
+interface Props {
+  example: Example;
+}
+
+const { example } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const built = hasWebBuild(example);
+const src = `${base}/examples/${example.name}/${example.name}.js`;
+---
+
+<figure class="ex">
+  <div class="ex-frame">
+    <canvas id="canvas" class="ex-canvas" tabindex="0" aria-label={`raylib example: ${example.title}`} hidden></canvas>
+    <div class="ex-poster">
+      {
+        built ? (
+          <>
+            <button class="ex-run" type="button" data-src={src} hidden>
+              Run
+            </button>
+            <p class="ex-hint">Runs the Zig port in your browser (WebGL 2).</p>
+            <noscript>
+              <p class="ex-hint">Running an example needs JavaScript.</p>
+            </noscript>
+          </>
+        ) : (
+          <p class="ex-hint">There is no browser build of this example yet.</p>
+        )
+      }
+    </div>
+  </div>
+</figure>
+
+<style>
+  /* The canvas keeps the example's own colours on both themes, as a code block
+     keeps its highlighting: the thing shown should not change with the frame. */
+  .ex {
+    margin: 0 0 1.5rem;
+  }
+
+  .ex-frame {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    max-width: 100%;
+    background: #101216;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .ex-canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    outline: none;
+  }
+
+  .ex-poster {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+    color: #c9cdd8;
+  }
+
+  .ex-hint {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .ex-run {
+    font: inherit;
+    font-weight: 600;
+    padding: 0.5rem 1.6rem;
+    color: #15171c;
+    background: #f7a41d;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .ex-run:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+  }
+</style>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>(".ex-run");
+  const canvas = document.querySelector<HTMLCanvasElement>(".ex-canvas");
+  const poster = document.querySelector<HTMLElement>(".ex-poster");
+
+  if (button && canvas && poster) {
+    button.hidden = false;
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      button.textContent = "Loading…";
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const tag = document.createElement("script");
+          tag.src = button.dataset.src!;
+          tag.onload = () => resolve();
+          tag.onerror = () => reject(new Error("could not load the example"));
+          document.head.append(tag);
+        });
+        canvas.hidden = false;
+        poster.hidden = true;
+        // Emscripten resizes the canvas to the example's window size. The
+        // .wasm and the preloaded .data sit next to the script; without
+        // locateFile the .data is fetched relative to the page.
+        const dir = button.dataset.src!.replace(/[^/]*$/, "");
+        await (window as any).createExample({ canvas, locateFile: (path: string) => dir + path });
+        canvas.focus();
+      } catch (error) {
+        canvas.hidden = true;
+        poster.hidden = false;
+        button.hidden = true;
+        const hint = poster.querySelector(".ex-hint");
+        if (hint) hint.textContent = `This example needs WebGL 2. ${error}`;
+      }
+    });
+
+    // Examples read arrow keys and space; keep the page from scrolling while
+    // the canvas has focus.
+    const keys = new Set(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Space"]);
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (document.activeElement === canvas && keys.has(event.code)) event.preventDefault();
+      },
+      { passive: false },
+    );
+  }
+</script>

@@ -1,0 +1,81 @@
+---
+import Base from "../../layouts/Base.astro";
+import { CATEGORIES, examples, exampleHref } from "../../examples";
+
+const base = import.meta.env.BASE_URL;
+const all = examples();
+const verified = all.filter((e) => e.desktop.kind === "verified").length;
+const web = all.filter((e) => e.webVerified).length;
+---
+
+<Base title="Examples" description="raylib's examples, ported to Zig, with the result of comparing each one against C raylib.">
+  <h1>Examples</h1>
+  <p class="lede">
+    {
+      `These are raylib's own ${all.length} examples. Each page shows the Zig version next to the original C and ` +
+        `says how closely the two match. On the desktop, ${verified} render a final frame byte-identical to C. ` +
+        `In the browser, ${web} ${web === 1 ? "is" : "are"} checked so far.`
+    }
+  </p>
+
+  {
+    CATEGORIES.map((category) => {
+      const items = all.filter((e) => e.category === category);
+      return (
+        <section>
+          <h2 id={category}>{category}</h2>
+          <ul class="grid">
+            {items.map((e) => (
+              <li class="card">
+                <a href={exampleHref(base, e)}>{e.title}</a>
+                <span class="row">
+                  <span class="stars" title={`Complexity ${e.stars} of 4`}>
+                    {"★".repeat(e.stars)}
+                    {"☆".repeat(4 - e.stars)}
+                  </span>
+                  {e.desktop.kind === "verified" && <span class="badge ok">verified</span>}
+                  {e.desktop.kind === "build-only" && <span class="badge warn">builds</span>}
+                  {e.desktop.kind === "none" && <span class="badge muted">not ported</span>}
+                  {e.webVerified && <span class="badge ok">browser</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    })
+  }
+</Base>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card {
+    display: grid;
+    gap: 0.3rem;
+    padding: 0.7rem 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .card a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .row {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+  }
+</style>

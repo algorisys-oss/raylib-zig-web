@@ -3,4 +3,11 @@
 # The planning that created this repo ran in the raylib-zig session of
 # 2026-10-16 and is recorded in raylib-zig/tokens.txt.
 1	2026-10-16	15:23:31	15:23:46	12	19861	470819	1700	492392	492392	Read the handoff.md (no changes)
-2	2026-10-16	15:24:18	(in progress)	10	2397	413386	1351	417144	909536	git init, created public repo algorisys-oss/raylib-zig-web, pushed main
+2	2026-10-16	15:24:18	15:25:31	20	5145	833348	4179	842692	1335084	git init, created public repo algorisys-oss/raylib-zig-web, pushed main
+3	2026-10-16	15:26:30	15:59:33	636	906767	95616933	471530	96995866	98330950	Phase W in raylib-zig: web backend + ES3 rlgl + browser gate; core_basic_window 1/1
+4	2026-10-16	16:08:08	16:08:16	8	1331	1444455	652	1446446	99777396	exdiff 217/217 after split; started apiexamples
+5	2026-10-16	16:13:31	16:13:39	8	1827	1927171	1369	1930375	101707771	(continue)
+6	2026-10-16	16:36:40	16:52:02	40	15885	9212725	11436	9240086	110947857	apiexamples 217/217; cleared 74 GB cache; ReleaseFast web crash investigated
+7	2026-10-16	16:54:49	16:54:56	4	1054	977864	1084	980006	111927863	Q: no Astro project yet? (answer)
+8	2026-10-16	16:55:26	(in progress)	322	238241	86683612	166300	87088475	199016338	Astro site scaffold (home/gallery/example/about, e2e); va_list fix (ReleaseFast 1/1); commits
+# Subagents: none used this session.

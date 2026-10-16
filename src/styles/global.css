@@ -1,0 +1,252 @@
+/*
+ * One set of tokens, two columns. `light-dark()` picks a column from the used
+ * `color-scheme`, so switching modes is the two `data-theme` rules below
+ * (the same approach as ziglang.in). The palette is this site's own: it is
+ * unofficial and must not look like raylib.com.
+ */
+:root {
+  color-scheme: light;
+
+  --bg: light-dark(#f7f8fa, #15171c);
+  --surface: light-dark(#eceef2, #1e2128);
+  --raised: light-dark(#e1e4ea, #2a2e37);
+  --border: light-dark(#d2d6de, #363b46);
+  --text: light-dark(#1d2027, #e6e8ee);
+  --muted: light-dark(#5a6070, #9aa1b2);
+  /* Zig amber, darkened in the light column to clear AA on --bg. */
+  --accent: light-dark(#8a5400, #f7a41d);
+  --on-accent: light-dark(#ffffff, #15171c);
+  --ok: light-dark(#2f6b2a, #7fc069);
+  --warn: light-dark(#8a5a00, #e0b050);
+  --radius: 8px;
+  --gutter: 1rem;
+  --measure: 46rem;
+  --wide: 72rem;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* `hidden` must win over a component's own `display`, or a poster set hidden
+   by script stays on top of the canvas it was covering. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 1rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+a {
+  color: var(--accent);
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+code,
+pre {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+:not(pre) > code {
+  padding: 0.1em 0.35em;
+  background: var(--surface);
+  border-radius: 4px;
+}
+
+/* Shiki emits both themes as custom properties; pick a column by mode. */
+.astro-code,
+.astro-code span {
+  color: light-dark(var(--shiki-light), var(--shiki-dark));
+  background-color: light-dark(var(--shiki-light-bg), var(--shiki-dark-bg));
+}
+
+.astro-code {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  line-height: 1.5;
+}
+
+/* Layout ------------------------------------------------------------------ */
+
+.wrap {
+  width: 100%;
+  max-width: var(--wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.topbar {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.topbar .wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-height: 3.25rem;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.brand span {
+  color: var(--accent);
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav a:hover,
+.nav a[aria-current="page"] {
+  color: var(--text);
+}
+
+.topbar .spacer {
+  flex: 1;
+}
+
+.theme-toggle {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.7rem;
+  color: var(--text);
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.theme-toggle[data-next="dark"]::before {
+  content: "Dark";
+}
+
+.theme-toggle[data-next="light"]::before {
+  content: "Light";
+}
+
+main {
+  padding-block: 2rem 3rem;
+}
+
+h1 {
+  font-size: 1.9rem;
+  line-height: 1.25;
+  margin: 0 0 0.75rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+  margin: 2rem 0 0.75rem;
+}
+
+.lede {
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: var(--measure);
+}
+
+.crumbs {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.crumbs a {
+  color: var(--muted);
+}
+
+.footer {
+  border-top: 1px solid var(--border);
+  padding-block: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.footer p {
+  margin: 0.25rem 0;
+}
+
+/* Marks -------------------------------------------------------------------- */
+
+.stars {
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.badge.ok {
+  color: var(--ok);
+}
+
+.badge.warn {
+  color: var(--warn);
+}
+
+.badge.muted {
+  color: var(--muted);
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --gutter: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+}

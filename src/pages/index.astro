@@ -1,0 +1,35 @@
+---
+import Base from "../layouts/Base.astro";
+import ExampleCanvas from "../components/ExampleCanvas.astro";
+import { examples, exampleHref } from "../examples";
+
+const base = import.meta.env.BASE_URL;
+const all = examples();
+const basic = all.find((e) => e.category === "core" && e.name === "core_basic_window");
+if (!basic) throw new Error("core_basic_window is missing from raylib's examples list");
+const COMPAT = "https://github.com/algorisys-oss/raylib-zig-port/blob/main/docs/compatibility.md";
+---
+
+<Base title="raylib-zig">
+  <h1>raylib, ported to Zig</h1>
+  <p class="lede">
+    raylib-zig is raylib 6.2 rewritten in Zig. It exports the same C API, so a C program written for raylib links
+    against it unchanged. On top of that it has a Zig API in raylib's own style.
+  </p>
+
+  <p class="prose">
+    For every upstream example that can run deterministically, the Zig library renders a final frame byte-identical to
+    C raylib (217 of 217, on Linux, desktop GLFW, OpenGL 3.3). <a href={COMPAT}>How that is checked</a>.
+  </p>
+
+  <h2>Try it</h2>
+  <p class="prose">
+    This is raylib's first example, <a href={exampleHref(base, basic)}>basic window</a>, written with the Zig API and
+    compiled to WebAssembly. What runs is the Zig port, not C raylib.
+  </p>
+  <ExampleCanvas example={basic} />
+
+  <p class="prose">
+    <a href={`${base}examples/`}>All {all.length} examples</a>, each with its Zig and C source side by side.
+  </p>
+</Base>

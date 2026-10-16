@@ -1,0 +1,169 @@
+---
+import { Code } from "astro:components";
+import Base from "../../../../layouts/Base.astro";
+import ExampleCanvas from "../../../../components/ExampleCanvas.astro";
+import { examples, type Example } from "../../../../examples";
+
+export function getStaticPaths() {
+  return examples().map((example) => ({
+    params: { category: example.category, name: example.name },
+    props: { example },
+  }));
+}
+
+interface Props {
+  example: Example;
+}
+
+const { example } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const stars = "★".repeat(example.stars) + "☆".repeat(4 - example.stars);
+const upstream = `https://github.com/raysan5/raylib/blob/master/examples/${example.category}/${example.name}.c`;
+---
+
+<Base
+  title={`${example.category}: ${example.title}`}
+  description={`The raylib ${example.category} example "${example.title}", in Zig and C, running in the browser from raylib-zig.`}
+  crumbs={[
+    { label: "Examples", href: `${base}/examples/` },
+    { label: example.category, href: `${base}/examples/#${example.category}` },
+    { label: example.title },
+  ]}
+>
+  <h1>{example.title}</h1>
+  <p class="meta">
+    <span class="stars" title={`Complexity ${example.stars} of 4`}>{stars}</span>
+    <span>by {example.author} (<a href={`https://github.com/${example.authorGithub.replace(/^@/, "")}`}>{example.authorGithub}</a>)</span>
+  </p>
+
+  <ExampleCanvas example={example} />
+
+  <h2>Is it the same as C?</h2>
+  <ul class="checks">
+    <li>
+      <strong>Desktop:</strong>
+      {example.desktop.kind === "verified" && (
+        <>
+          <span class="badge ok">verified</span> The Zig version renders a final frame that is byte-identical to the C
+          example.
+        </>
+      )}
+      {example.desktop.kind === "build-only" && (
+        <>
+          <span class="badge warn">builds</span> The Zig version builds, but it is not compared with C, because the C
+          example does not give the same frame twice: {example.desktop.reason}.
+        </>
+      )}
+      {example.desktop.kind === "none" && (
+        <>
+          <span class="badge muted">not ported</span> {example.desktop.reason}.
+        </>
+      )}
+    </li>
+    <li>
+      <strong>Browser:</strong>
+      {example.webVerified ? (
+        <>
+          <span class="badge ok">verified</span> In headless Chrome, the Zig version gives a final frame byte-identical
+          to the C example built for the web.
+        </>
+      ) : (
+        <>
+          <span class="badge muted">not checked yet</span> The browser comparison does not cover this example yet.
+        </>
+      )}
+    </li>
+  </ul>
+
+  <div class="tabs">
+    {
+      example.zigSource && (
+        <>
+          <input type="radio" name="src" id="tab-zig" checked />
+          <label for="tab-zig">Zig</label>
+        </>
+      )
+    }
+    <input type="radio" name="src" id="tab-c" checked={!example.zigSource} />
+    <label for="tab-c">C (original)</label>
+    {
+      example.zigSource && (
+        <div class="panel panel-zig">
+          <Code code={example.zigSource} lang="zig" themes={{ light: "github-light-high-contrast", dark: "github-dark-high-contrast" }} defaultColor={false} />
+        </div>
+      )
+    }
+    <div class="panel panel-c">
+      <Code code={example.cSource} lang="c" themes={{ light: "github-light-high-contrast", dark: "github-dark-high-contrast" }} defaultColor={false} />
+      <p class="note">From raylib 6.2. <a href={upstream}>The original on GitHub</a>.</p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    color: var(--muted);
+    margin: 0 0 1.25rem;
+  }
+
+  .checks {
+    padding-left: 1.1rem;
+    max-width: var(--measure);
+  }
+
+  .checks li {
+    margin-bottom: 0.5rem;
+  }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 2rem;
+  }
+
+  .tabs input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .tabs label {
+    padding: 0.35rem 1rem;
+    border: 1px solid var(--border);
+    border-bottom: 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .tabs input:checked + label {
+    background: var(--raised);
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .tabs input:focus-visible + label {
+    outline: 2px solid var(--accent);
+  }
+
+  .panel {
+    display: none;
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  #tab-zig:checked ~ .panel-zig,
+  #tab-c:checked ~ .panel-c {
+    display: block;
+  }
+
+  .note {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+</style>
