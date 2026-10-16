@@ -16,8 +16,13 @@
   translations, fails the build.
 - Address decided by the owner: **www.ziglang.in/raylib**, so build with
   `BASE_PATH=/raylib/ SITE_URL=https://www.ziglang.in` (AGENTS.md decision 4).
-- Last commit: see `git log`. Local only: pushing needs the owner's go-ahead.
-- raylib-zig: phase W committed there (71aa427, not pushed). Browser gate 1/1.
+- Pushed: main (this repo), raylib-zig main (71aa427). `gh-pages` holds the
+  site built for /raylib/ (69a92b4, published by hand from 3ecbd7f).
+- ziglang.in wiring done on zig-guide `dev` (767442a, pushed): web/subsites.json
+  + web/tools/fetch-subsites.mjs, in CI and gh-deploy.sh. **Not live yet**:
+  zig-guide `dev` also carries the owner's unshipped paint work, so shipping
+  (ff main onto dev) is the owner's call. www.ziglang.in/raylib/ appears on the
+  first ziglang.in deploy after that.
 
 ## 2. What this run did
 
@@ -29,14 +34,16 @@
 
 ## 3. Next step
 
-1. Ask the owner how `/raylib` is wired: proposal in AGENTS.md decision 4
-   (ziglang.in's CI copies this repo's gh-pages into web/dist/raylib/).
+1. After the owner ships zig-guide: check www.ziglang.in/raylib/ loads and the
+   example runs.
 2. Grow the browser gate in raylib-zig (shapes first), rebuild `webdemos`,
    `npm run sync`.
 3. Phase S pages still missing: API reference and cheatsheet (needs the JSON
    output from raylib-zig's gen_api.py), getting started, compatibility.
 4. Gallery thumbnails from the gate screenshots.
-5. Phase D: CI (build, browser gate, astro build, e2e, publish gh-pages).
+5. Phase D: CI here (raylib-zig checkout + raylib 6.2 + emsdk + webdemos,
+   astro build with BASE_PATH=/raylib/, e2e, publish gh-pages). Until then
+   gh-pages is published by hand (orphan commit of dist/).
 
 ## 4. Open issues
 

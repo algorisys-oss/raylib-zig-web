@@ -38,13 +38,12 @@ in this repo.
    demos is rejected (the site would not be showing raylib-zig).
 4. **Address: www.ziglang.in/raylib** (owner, 2026-10-16). Build with
    `BASE_PATH=/raylib/` and `SITE_URL=https://www.ziglang.in` (www is
-   ziglang.in's canonical host; its CNAME). This repo publishes `dist/` to
-   its own `gh-pages`. GitHub Pages cannot serve another repo's Pages under a
-   path of a project site's custom domain (www.ziglang.in belongs to
-   rajeshpillai/zig-guide), so how `/raylib` is wired is still open: the
-   proposal is that ziglang.in's CI copies this repo's `gh-pages` into
-   `web/dist/raylib/` before it publishes. Ask the owner before the first
-   public deploy and before touching the zig-guide repo.
+   ziglang.in's canonical host). This repo publishes `dist/` to its own
+   `gh-pages` branch (orphan commit; Pages stays **off** for this repo).
+   ziglang.in (rajeshpillai/zig-guide) lists it in `web/subsites.json` and its
+   deploy copies that branch into `/raylib/`, so a change here goes live on
+   ziglang.in's next deploy (push to its main, or its 06:00 UTC nightly).
+   The owner plans more Zig-migration sites published the same way.
 
 ## Related repositories and tools
 
