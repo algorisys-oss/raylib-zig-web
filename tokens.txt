@@ -10,4 +10,6 @@
 6	2026-10-16	16:36:40	16:52:02	40	15885	9212725	11436	9240086	110947857	apiexamples 217/217; cleared 74 GB cache; ReleaseFast web crash investigated
 7	2026-10-16	16:54:49	16:54:56	4	1054	977864	1084	980006	111927863	Q: no Astro project yet? (answer)
 8	2026-10-16	16:55:26	(in progress)	322	238241	86683612	166300	87088475	199016338	Astro site scaffold (home/gallery/example/about, e2e); va_list fix (ReleaseFast 1/1); commits
-# Subagents: none used this session.
+# Row 8 ran on to 17:52 (tools/publish-gh-pages.sh, gh-pages 04475bb), then the session disconnected; its final count is in that transcript and was not recounted. Row 9 is a new session.
+9	2026-10-16	18:07:34	(in progress)	208	290580	11604650	42317	11937755	210954093	Resume: shapes browser gate 46/46 (raygui web flags), e2e runs all 46 demo pages, ziglang.in link to /raylib/
+# Subagents: none used.
