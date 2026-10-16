@@ -67,6 +67,11 @@ const upstream = `https://github.com/raysan5/raylib/blob/master/examples/${examp
           <span class="badge ok">verified</span> In headless Chrome, the Zig version gives a final frame byte-identical
           to the C example built for the web.
         </>
+      ) : example.webExcluded ? (
+        <>
+          <span class="badge warn">not run</span> This example cannot give a correct picture in a browser, in C or in
+          Zig: {example.webExcluded}.
+        </>
       ) : (
         <>
           <span class="badge muted">not checked yet</span> The browser comparison does not cover this example yet.

@@ -51,6 +51,8 @@ export interface Example {
   desktop: Desktop;
   /** Byte-identical to C in headless Chrome (the browser gate). */
   webVerified: boolean;
+  /** Why the browser gate leaves this example out, when it does on purpose. */
+  webExcluded: string | null;
 }
 
 function read(path: string): string {
@@ -64,6 +66,13 @@ function buildZigList(buildZig: string, name: string): string[] {
   if (start < 0) throw new Error(`raylib-zig build.zig has no list ${name}`);
   const body = buildZig.slice(start, buildZig.indexOf("};", start));
   return [...body.matchAll(/^\s*"([^"]+)",/gm)].map((m) => m[1]);
+}
+
+/** Browser exclusions: `// <category>/<name>: <reason>` lines in build.zig's `web_examples`. */
+function webExclusions(buildZig: string): Map<string, string> {
+  const start = buildZig.indexOf("const web_examples = [_][]const u8{");
+  const body = buildZig.slice(start, buildZig.indexOf("};", start));
+  return new Map([...body.matchAll(/^\s*\/\/\s*(\w+\/\w+):\s*(.+)$/gm)].map((m) => [m[1], m[2].trim()]));
 }
 
 /** Reasons recorded in test/examples.list for examples the gate does not run. */
@@ -99,6 +108,7 @@ export function examples(): Example[] {
   const gated = new Set(buildZigList(buildZig, "api_examples"));
   const buildOnly = new Set(buildZigList(buildZig, "api_examples_build_only"));
   const web = new Set(buildZigList(buildZig, "web_examples"));
+  const webExcluded = webExclusions(buildZig);
   const reasons = exclusionReasons(read(join(RAYLIB_ZIG, "test/examples.list")));
 
   // Rows of raylib's list, then any example file the list leaves out.
@@ -148,6 +158,7 @@ export function examples(): Example[] {
       zigSource,
       desktop,
       webVerified: web.has(entry),
+      webExcluded: webExcluded.get(entry) ?? null,
     });
   }
   cache = out;

@@ -43,6 +43,8 @@ const src = `${base}/examples/${example.name}/${example.name}.js`;
               <p class="ex-hint">Running an example needs JavaScript.</p>
             </noscript>
           </>
+        ) : example.webExcluded ? (
+          <p class="ex-hint">This example does not run in a browser. The reason is below.</p>
         ) : (
           <p class="ex-hint">There is no browser build of this example yet.</p>
         )
