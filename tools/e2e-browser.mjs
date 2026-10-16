@@ -5,13 +5,15 @@
 // Serves dist/ under BASE_PATH (the same value the build used), then:
 //   - every checked page loads with no page errors and no broken local links
 //     to other checked pages,
-//   - the home page's example runs: pressing Run loads the Zig wasm, and the
-//     canvas shows more than one colour within a few seconds.
-// Exit status 0 when all pass. A screenshot of the running example is written
-// to e2e-example.png for a human to look at.
+//   - the home page's example runs, and so does the example page of every
+//     example that has a browser build (dist/examples/<name>/): pressing Run
+//     loads the Zig wasm, and the canvas shows more than one colour within a
+//     few seconds.
+// Exit status 0 when all pass. A screenshot of the home example is written to
+// e2e-example.png for a human to look at.
 import { chromium } from "playwright";
 import { createServer } from "node:http";
-import { readFile, stat } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import { join, extname } from "node:path";
 
 const dist = new URL("../dist/", import.meta.url).pathname;
@@ -40,6 +42,48 @@ const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--ena
 const failures = [];
 const fail = (msg) => { failures.push(msg); console.log("  FAIL  " + msg); };
 
+/** Press Run on the page at `path` and check the canvas comes alive. */
+async function checkRuns(label, path, screenshot) {
+  const page = await browser.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  try {
+    await page.goto(origin + base + path);
+    await page.click(".ex-run");
+    await page.waitForSelector(".ex-canvas:not([hidden])", { timeout: 30000 });
+    await page.waitForTimeout(3000);
+    // The poster comes back with an error text when the example fails to start.
+    if (await page.locator(".ex-poster").isVisible()) {
+      fail(`${label} did not start: ${await page.locator(".ex-hint").textContent()}`);
+      return false;
+    }
+    const shot = await page.locator(".ex-canvas").screenshot(screenshot ? { path: screenshot } : {});
+    // Count distinct colours: a blank or failed canvas is one colour.
+    const colours = await page.evaluate(async (b64) => {
+      const img = new Image();
+      img.src = "data:image/png;base64," + b64;
+      await img.decode();
+      const c = document.createElement("canvas");
+      c.width = img.width; c.height = img.height;
+      const ctx = c.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const d = ctx.getImageData(0, 0, c.width, c.height).data;
+      const seen = new Set();
+      for (let i = 0; i < d.length; i += 4 * 97) seen.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
+      return seen.size;
+    }, shot.toString("base64"));
+    if (errors.length) { fail(`${label}: ${errors.join("; ")}`); return false; }
+    if (colours < 2) { fail(`${label}: canvas is blank (${colours} colour)`); return false; }
+    if (screenshot) console.log(`  OK    ${label} runs (${colours} colours sampled; ${screenshot})`);
+    return true;
+  } catch (e) {
+    fail(`${label}: ${e.message.split("\n")[0]}`);
+    return false;
+  } finally {
+    await page.close();
+  }
+}
+
 try {
   const pages = ["", "examples/", "about/", "examples/core/core_basic_window/", "examples/shaders/shaders_julia_set/"];
   for (const p of pages) {
@@ -59,37 +103,17 @@ try {
     if (!failures.length) console.log(`  OK    ${base}${p}`);
   }
 
-  // The live example on the home page.
-  const page = await browser.newPage();
-  const errors = [];
-  page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto(origin + base);
-  await page.click(".ex-run");
-  await page.waitForSelector(".ex-canvas:not([hidden])", { timeout: 30000 });
-  await page.waitForTimeout(3000);
-  // The poster comes back with an error text when the example fails to start.
-  if (await page.locator(".ex-poster").isVisible()) {
-    fail(`home example did not start: ${await page.locator(".ex-hint").textContent()}`);
+  // The live example on the home page, then every example with a build.
+  await checkRuns("home example", "", "e2e-example.png");
+  const built = (await readdir(join(dist, "examples"), { withFileTypes: true }))
+    .filter((d) => d.isDirectory() && d.name.includes("_"))
+    .map((d) => d.name).sort();
+  let ran = 0;
+  for (const name of built) {
+    const category = name.slice(0, name.indexOf("_"));
+    if (await checkRuns(name, `examples/${category}/${name}/`)) ran++;
   }
-  const shot = await page.locator(".ex-canvas").screenshot({ path: "e2e-example.png" });
-  // Count distinct colours in the PNG's raw bytes cheaply via the canvas: a
-  // blank or failed canvas is one colour.
-  const colours = await page.evaluate(async (b64) => {
-    const img = new Image();
-    img.src = "data:image/png;base64," + b64;
-    await img.decode();
-    const c = document.createElement("canvas");
-    c.width = img.width; c.height = img.height;
-    const ctx = c.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-    const d = ctx.getImageData(0, 0, c.width, c.height).data;
-    const seen = new Set();
-    for (let i = 0; i < d.length; i += 4 * 97) seen.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
-    return seen.size;
-  }, shot.toString("base64"));
-  if (errors.length) fail(`home example: ${errors.join("; ")}`);
-  if (colours < 2) fail(`home example: canvas is blank (${colours} colour)`);
-  else console.log(`  OK    home example runs (${colours} colours sampled; e2e-example.png)`);
+  console.log(`  OK    ${ran}/${built.length} example pages run their browser build`);
 } finally {
   await browser.close();
   server.close();
