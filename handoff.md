@@ -15,6 +15,9 @@
 - Order when both change: push raylib-zig, wait for its run, then the site's
   next run (push, nightly, or manual) picks up the new release.
 - This repo: main pushed up to this handoff commit. raylib-zig: 21da7ec.
+- ziglang.in links to the site: zig-guide main fast-forwarded to 669ba42
+  (owner's go-ahead, 2026-10-17 19:16 IST); "raylib-zig" in its top bar, phone
+  menu and footer. Its deploy carried the current gh-pages (209 verified).
 - **GitHub Pages is ON for this repo** (GitHub enabled it when gh-pages was
   first pushed). It serves https://algorisys-oss.github.io/raylib-zig-web/,
   a /raylib/-based build at the wrong path (broken links, duplicate content).
