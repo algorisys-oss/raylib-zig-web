@@ -7,7 +7,9 @@
 #   tools/publish-gh-pages.sh            # sync examples, check getting-started, build, e2e, push
 #   tools/publish-gh-pages.sh --dry-run  # everything except the push
 #
-# Stand-in until phase D's CI does this.
+# Run by hand and by CI (.github/workflows/ci.yml). Env: RAYLIB_ZIG and
+# RAYLIB_EXAMPLES (the checkouts the site reads), PUBLISH_URL (push remote;
+# default: this repo's origin).
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
@@ -28,6 +30,8 @@ cp -r dist/. "$work"
 touch "$work/.nojekyll"
 git -C "$work" init -q -b gh-pages
 git -C "$work" add -A
-git -C "$work" commit -q -m "Site build for www.ziglang.in/raylib (from $src)"
-git -C "$work" push -q -f "$(git remote get-url origin)" gh-pages
+git -C "$work" -c user.name="$(git config user.name || echo raylib-zig-web CI)" \
+  -c user.email="$(git config user.email || echo ci@noreply.github.com)" \
+  commit -q -m "Site build for www.ziglang.in/raylib (from $src)"
+git -C "$work" push -q -f "${PUBLISH_URL:-$(git remote get-url origin)}" gh-pages
 echo "published gh-pages from $src"

@@ -9,3 +9,4 @@ public/examples/
 # Gallery thumbnails, made from raylib-zig's gate frames by `npm run sync`
 public/thumbs/
 e2e-example.png
+.ci/

@@ -158,6 +158,18 @@ site, then publish `dist/` to `gh-pages` as an orphan commit, only from
 `main`, only if everything passed. `SITE_URL`/`BASE_PATH` come from one
 place for both the build and the browser check.
 
+
+How it is built (2026-10-17, owner's choice: the gate runs in raylib-zig's
+CI; this repo publishes automatically from green main):
+
+- raylib-zig-port `.github/workflows/web.yml`: browser gate + demos at
+  ReleaseFast, uploaded with the gate frames and a MANIFEST (commit) to its
+  `web-latest` release.
+- This repo `.github/workflows/ci.yml` (push, PR, nightly 05:30 UTC, manual):
+  downloads `web-latest`, checks out raylib-zig-port at the MANIFEST's commit
+  into `.ci/raylib-zig`, clones raylib 6.2, installs the Getting started
+  page's packages, then `tools/publish-gh-pages.sh` (`--dry-run` off main).
+  Zig is pinned to the same build as raylib-zig's CI.
 ## Rules
 
 - **The code on a page is the code that was built and gated.** Example
