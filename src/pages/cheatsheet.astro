@@ -1,0 +1,76 @@
+---
+import Base from "../layouts/Base.astro";
+import { apiHref, apiModules } from "../api";
+
+const base = import.meta.env.BASE_URL;
+const modules = apiModules();
+---
+
+<Base title="Cheatsheet" description="Every raylib-zig function on one page, Zig and C side by side.">
+  <h1>Cheatsheet</h1>
+  <p class="lede">
+    Every function on one page, Zig on the left and C on the right. Each name links to its entry in the <a
+      href={`${base}api/`}>API reference</a
+    >.
+  </p>
+  <nav class="toc" aria-label="Modules">
+    {modules.map((m) => <a href={`#${m.slug}`}>{m.title}</a>)}
+  </nav>
+  {
+    modules.map((m) => (
+      <section>
+        <h2 id={m.slug}>{m.title}</h2>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>Zig</th><th>C</th></tr>
+            </thead>
+            <tbody>
+              {m.functions.map((f) => (
+                <tr>
+                  <td><a href={apiHref(base, m, f)}><code>{f.zigSignature.replace(/^fn /, `${f.zig.slice(0, f.zig.lastIndexOf("."))}.`)}</code></a></td>
+                  <td><code>{f.cSignature.replace(/;$/, "")}</code></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin: 1rem 0 1.5rem;
+  }
+
+  /* The table is wider than a phone; it scrolls on its own, the page does not. */
+  .scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid var(--border);
+    padding: 0.25rem 0.75rem 0.25rem 0;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  code {
+    white-space: pre;
+  }
+
+  td a {
+    text-decoration: none;
+  }
+</style>

@@ -4,7 +4,7 @@
 # orphan commit. ziglang.in's deploy copies that branch into /raylib/
 # (zig-guide web/subsites.json), so it goes live on ziglang.in's next deploy.
 #
-#   tools/publish-gh-pages.sh            # sync examples, build, e2e, push
+#   tools/publish-gh-pages.sh            # sync examples, check getting-started, build, e2e, push
 #   tools/publish-gh-pages.sh --dry-run  # everything except the push
 #
 # Stand-in until phase D's CI does this.
@@ -15,6 +15,7 @@ export BASE_PATH=/raylib/
 export SITE_URL=https://www.ziglang.in
 
 npm run sync
+tools/check-getting-started.sh
 npx astro build
 node tools/e2e-browser.mjs
 

@@ -1,0 +1,62 @@
+---
+import Base from "../../layouts/Base.astro";
+import { apiModules } from "../../api";
+
+const base = import.meta.env.BASE_URL;
+const modules = apiModules();
+const total = modules.reduce((n, m) => n + m.functions.length, 0);
+---
+
+<Base title="API reference" description="Every raylib-zig function: its Zig and C signatures, raylib's description, and the examples that use it.">
+  <div class="prose">
+    <h1>API reference</h1>
+    <p>
+      raylib-zig has {total} functions. Each entry shows the Zig signature, the C one it wraps, raylib's description, and
+      the examples that call it. The reference is generated from the same data as the Zig API, so it matches the code.
+    </p>
+    <p>
+      In Zig, a function keeps raylib's name with the first letter in lower case: <code>DrawText</code> is
+      <code>rl.drawText</code>. raymath is <code>rl.math</code> and rlgl is <code>rl.gl</code>.
+    </p>
+  </div>
+  <table class="modules">
+    <thead>
+      <tr><th>Module</th><th>Covers</th><th>Functions</th></tr>
+    </thead>
+    <tbody>
+      {
+        modules.map((m) => (
+          <tr>
+            <td><a href={`${base}api/${m.slug}/`}>{m.title}</a></td>
+            <td>{m.about}</td>
+            <td class="n">{m.functions.length}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="prose">
+    raygui, the immediate-mode GUI, is also available as <code>@import("raygui")</code>. It is not in this reference yet.
+  </p>
+</Base>
+
+<style>
+  .modules {
+    border-collapse: collapse;
+    margin: 1rem 0;
+    max-width: var(--measure);
+    width: 100%;
+  }
+
+  .modules th,
+  .modules td {
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0.6rem;
+    text-align: left;
+  }
+
+  .modules .n {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

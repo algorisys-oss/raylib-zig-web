@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { CATEGORIES, examples, exampleHref } from "../../examples";
+import { CATEGORIES, examples, exampleHref, thumbnail } from "../../examples";
 
 const base = import.meta.env.BASE_URL;
 const all = examples();
@@ -27,7 +27,12 @@ const web = all.filter((e) => e.webVerified).length;
           <ul class="grid">
             {items.map((e) => (
               <li class="card">
-                <a href={exampleHref(base, e)}>{e.title}</a>
+                <a href={exampleHref(base, e)}>
+                  {thumbnail(base, e) && (
+                    <img src={thumbnail(base, e)} alt="" width="320" height="180" loading="lazy" decoding="async" />
+                  )}
+                  {e.title}
+                </a>
                 <span class="row">
                   <span class="stars" title={`Complexity ${e.stars} of 4`}>
                     {"★".repeat(e.stars)}
@@ -67,8 +72,20 @@ const web = all.filter((e) => e.webVerified).length;
   }
 
   .card a {
+    display: grid;
+    gap: 0.5rem;
     font-weight: 600;
     text-decoration: none;
+  }
+
+  /* The browser gate's final frame of the example (C and Zig identical). */
+  .card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: calc(var(--radius) - 2px);
+    background: var(--raised);
   }
 
   .row {

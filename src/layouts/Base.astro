@@ -24,7 +24,11 @@ const metaDescription =
   description ?? "raylib-zig: raylib 6.2 ported to Zig. Every example runs in your browser from the Zig port.";
 const current = Astro.url.pathname;
 const nav = [
+  { label: "Getting started", href: `${base}/getting-started/` },
   { label: "Examples", href: `${base}/examples/` },
+  { label: "API", href: `${base}/api/` },
+  { label: "Cheatsheet", href: `${base}/cheatsheet/` },
+  { label: "Compatibility", href: `${base}/compatibility/` },
   { label: "About", href: `${base}/about/` },
 ];
 const canonical = new URL(current, Astro.site).href;

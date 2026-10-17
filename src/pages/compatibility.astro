@@ -1,0 +1,30 @@
+---
+import { getEntry, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { RAYLIB_ZIG } from "../examples";
+
+const entry = await getEntry("portDocs", "compatibility");
+if (!entry) throw new Error(`missing ${RAYLIB_ZIG}/docs/compatibility.md`);
+const { Content } = await render(entry);
+---
+
+<Base
+  title="Compatibility"
+  description="How compatible raylib-zig is with C raylib: what is verified, how it is checked, and what is not covered."
+>
+  <div class="prose">
+    <p class="source-note">
+      This page is raylib-zig's own compatibility record, <a
+        href="https://github.com/algorisys-oss/raylib-zig-port/blob/main/docs/compatibility.md">docs/compatibility.md</a
+      >, shown as it was when this site was built.
+    </p>
+    <Content />
+  </div>
+</Base>
+
+<style>
+  .source-note {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>

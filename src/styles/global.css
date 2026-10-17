@@ -104,6 +104,36 @@ pre {
   max-width: var(--measure);
 }
 
+/* Tables in rendered documents (compatibility.md) are wider than the text
+   column on a phone: they scroll sideways on their own, the page does not. */
+.prose table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  background: var(--surface);
+}
+
+/* Shiki's blocks style themselves (.astro-code); this is for any other. */
+.prose pre:not(.astro-code) {
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
 .topbar {
   border-bottom: 1px solid var(--border);
   background: var(--surface);
@@ -144,7 +174,8 @@ pre {
 
 .nav {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -153,6 +184,7 @@ pre {
 .nav a {
   color: var(--muted);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav a:hover,

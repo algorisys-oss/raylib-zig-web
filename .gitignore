@@ -6,4 +6,6 @@ zig-out/
 __pycache__/
 # Web builds of the examples, copied from raylib-zig by `npm run sync`
 public/examples/
+# Gallery thumbnails, made from raylib-zig's gate frames by `npm run sync`
+public/thumbs/
 e2e-example.png

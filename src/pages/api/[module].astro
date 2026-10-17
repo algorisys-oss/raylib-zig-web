@@ -1,0 +1,138 @@
+---
+import Base from "../../layouts/Base.astro";
+import { apiModules, examplesUsing, type ApiModule } from "../../api";
+import { exampleHref } from "../../examples";
+
+export function getStaticPaths() {
+  return apiModules().map((module) => ({ params: { module: module.slug }, props: { module } }));
+}
+
+interface Props {
+  module: ApiModule;
+}
+
+const { module } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const using = examplesUsing();
+/** At most this many example links per function; the rest are counted. */
+const SHOWN = 6;
+
+// Functions grouped as the header groups them, in header order.
+const groups: { name: string | null; functions: ApiModule["functions"] }[] = [];
+for (const f of module.functions) {
+  const last = groups.at(-1);
+  if (last && last.name === f.group) last.functions.push(f);
+  else groups.push({ name: f.group, functions: [f] });
+}
+---
+
+<Base
+  title={`${module.title} API`}
+  description={`raylib-zig's ${module.title} functions (${module.source}): Zig and C signatures, descriptions and examples.`}
+  crumbs={[{ label: "API reference", href: `${base}api/` }, { label: module.title }]}
+>
+  <h1>{module.title}</h1>
+  <p class="lede">{module.about} {module.functions.length} functions, from raylib's <code>{module.source}</code>.</p>
+
+  {
+    groups.length > 1 && (
+      <nav class="toc" aria-label="Groups">
+        {groups.map((g, i) => <a href={`#group-${i}`}>{g.name}</a>)}
+      </nav>
+    )
+  }
+
+  {
+    groups.map((g, i) => (
+      <section>
+        {g.name && <h2 id={`group-${i}`}>{g.name}</h2>}
+        {g.functions.map((f) => {
+          const examples = using.get(f.zig) ?? [];
+          return (
+            <article class="fn" id={f.c}>
+              <h3>
+                <a href={`#${f.c}`}>{f.zig}</a>
+              </h3>
+              {f.doc && <p class="doc">{f.doc}</p>}
+              {f.zigDoc.length > 0 && <p class="zigdoc">{f.zigDoc.join(" ")}</p>}
+              <pre class="sig"><span class="lang">Zig</span><code>{f.zigSignature}</code></pre>
+              <pre class="sig"><span class="lang">C</span><code>{f.cSignature}</code></pre>
+              {examples.length > 0 && (
+                <p class="used">
+                  Used in{" "}
+                  {examples.slice(0, SHOWN).map((e, j) => (
+                    <>
+                      {j > 0 && ", "}
+                      <a href={exampleHref(base, e)}>{e.name}</a>
+                    </>
+                  ))}
+                  {examples.length > SHOWN && ` and ${examples.length - SHOWN} more`}.
+                </p>
+              )}
+            </article>
+          );
+        })}
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin: 1rem 0 2rem;
+    font-size: 0.9rem;
+  }
+
+  .fn {
+    max-width: var(--measure);
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    scroll-margin-top: 1rem;
+  }
+
+  .fn h3 {
+    margin: 0 0 0.4rem;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 1rem;
+  }
+
+  .fn h3 a {
+    text-decoration: none;
+  }
+
+  .doc,
+  .zigdoc,
+  .used {
+    margin: 0.3rem 0;
+  }
+
+  .zigdoc,
+  .used {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .sig {
+    display: flex;
+    gap: 0.75rem;
+    margin: 0.4rem 0;
+    padding: 0.5rem 0.75rem;
+    overflow-x: auto;
+    background: var(--surface);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+  }
+
+  .sig .lang {
+    flex: none;
+    width: 1.6rem;
+    color: var(--muted);
+  }
+
+  .sig code {
+    white-space: pre;
+  }
+</style>

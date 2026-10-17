@@ -170,6 +170,12 @@ export function exampleHref(base: string, e: Pick<Example, "category" | "name">)
   return `${base.replace(/\/$/, "")}/examples/${e.category}/${e.name}/`;
 }
 
+/** Path of the gallery thumbnail (the browser gate's final frame), if `npm run sync` made one. */
+export function thumbnail(base: string, e: Pick<Example, "name">): string | null {
+  if (!existsSync(join(process.cwd(), "public/thumbs", `${e.name}.webp`))) return null;
+  return `${base.replace(/\/$/, "")}/thumbs/${e.name}.webp`;
+}
+
 /** Whether `npm run sync` copied a browser build for this example. */
 export function hasWebBuild(e: Pick<Example, "name">): boolean {
   return existsSync(join(process.cwd(), "public/examples", e.name, `${e.name}.js`));

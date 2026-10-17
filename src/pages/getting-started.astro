@@ -1,0 +1,105 @@
+---
+/**
+ * Getting started: raylib-zig as a dependency of your own project.
+ *
+ * The code shown is the code that is built (AGENTS.md): build.zig is
+ * getting-started/build.zig, which tools/check-getting-started.sh compiles as
+ * a project depending on raylib-zig, and main.zig is raylib-zig's own
+ * examples/zig/core/core_basic_window.zig, read from the checkout.
+ */
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { Code } from "astro:components";
+import Base from "../layouts/Base.astro";
+import { RAYLIB_ZIG, exampleHref } from "../examples";
+
+const buildZig = readFileSync(join(process.cwd(), "getting-started/build.zig"), "utf8");
+const mainZig = readFileSync(join(RAYLIB_ZIG, "examples/zig/core/core_basic_window.zig"), "utf8");
+const base = import.meta.env.BASE_URL;
+const themes = { light: "github-light-high-contrast", dark: "github-dark-high-contrast" } as const;
+
+const fetchCmd = "zig fetch --save=raylib_zig git+https://github.com/algorisys-oss/raylib-zig-port";
+const aptCmd = "sudo apt install libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev";
+---
+
+<Base
+  title="Getting started"
+  description="Add raylib-zig to a Zig project, open your first window, and build it."
+>
+  <div class="prose">
+    <h1>Getting started</h1>
+    <p>
+      raylib-zig is a Zig package. You add it to your project, import the <code>raylib</code> module, and write a normal
+      Zig program. The project on this page is built every time this site is built, so the steps are known to work.
+    </p>
+
+    <h2>What you need</h2>
+    <ul>
+      <li>
+        Zig <code>0.18.0-dev.246+05671ced9</code>. raylib-zig follows Zig master, and this is the version it is built and
+        tested with.
+      </li>
+      <li>
+        Linux on x86-64, with X11 and OpenGL. That is the only configuration raylib-zig is tested on (see <a
+          href={`${base}compatibility/`}>Compatibility</a
+        >). On Debian or Ubuntu, these packages have the headers and libraries it needs:
+      </li>
+    </ul>
+    <Code code={aptCmd} lang="sh" themes={themes} defaultColor={false} />
+
+    <h2>1. Make a project</h2>
+    <p>
+      Make a folder for the project. Inside it, <code>zig init --minimal</code> writes a <code>build.zig.zon</code> and a
+      <code>build.zig</code>. You'll replace the <code>build.zig</code> in step 3.
+    </p>
+    <Code code={"mkdir basic_window && cd basic_window\nzig init --minimal"} lang="sh" themes={themes} defaultColor={false} />
+
+    <h2>2. Add raylib-zig</h2>
+    <p>
+      This downloads raylib-zig and records it in <code>build.zig.zon</code> under the name <code>raylib_zig</code>,
+      with the commit and a hash of its contents:
+    </p>
+    <Code code={fetchCmd} lang="sh" themes={themes} defaultColor={false} />
+
+    <h2>3. Write build.zig</h2>
+    <p>
+      The build gets the <code>raylib</code> module from the dependency and gives it to your program. Passing the
+      target and optimize mode on to the dependency builds raylib the same way as your program.
+    </p>
+    <Code code={buildZig} lang="zig" themes={themes} defaultColor={false} />
+
+    <h2>4. Write src/main.zig</h2>
+    <p>
+      This is raylib's first example, <a href={exampleHref(base, { category: "core", name: "core_basic_window" })}
+        >basic window</a
+      >, in raylib-zig's Zig API. The names are raylib's, with the first letter in lower case. <code>defer</code>
+      closes the window and ends each frame, so you can't forget to.
+    </p>
+    <Code code={mainZig} lang="zig" themes={themes} defaultColor={false} />
+
+    <h2>5. Build and run</h2>
+    <Code code="zig build run" lang="sh" themes={themes} defaultColor={false} />
+    <p>
+      The first build compiles raylib too, so it takes a while. Later builds reuse it. Press Escape or close the
+      window to quit.
+    </p>
+
+    <h2>Next</h2>
+    <ul>
+      <li>
+        Every example on this site has its Zig source. The <a href={`${base}examples/`}>examples</a> are the best place
+        to see how each part of the API is used.
+      </li>
+      <li>
+        raylib-zig also builds a <code>libraylib.a</code> with raylib's C interface, so a C program written for raylib
+        links against it unchanged.
+      </li>
+      <li>
+        The examples on this site run in the browser, built with Emscripten. raylib-zig does not yet have a build helper
+        for doing the same with your own project. Its <a
+          href="https://github.com/algorisys-oss/raylib-zig-port/blob/main/docs/web.md">web notes</a
+        > explain how the examples are built.
+      </li>
+    </ul>
+  </div>
+</Base>

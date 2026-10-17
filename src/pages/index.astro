@@ -7,7 +7,8 @@ const base = import.meta.env.BASE_URL;
 const all = examples();
 const basic = all.find((e) => e.category === "core" && e.name === "core_basic_window");
 if (!basic) throw new Error("core_basic_window is missing from raylib's examples list");
-const COMPAT = "https://github.com/algorisys-oss/raylib-zig-port/blob/main/docs/compatibility.md";
+const desktop = all.filter((e) => e.desktop.kind === "verified").length;
+const browser = all.filter((e) => e.webVerified).length;
 ---
 
 <Base title="raylib-zig">
@@ -19,7 +20,8 @@ const COMPAT = "https://github.com/algorisys-oss/raylib-zig-port/blob/main/docs/
 
   <p class="prose">
     For every upstream example that can run deterministically, the Zig library renders a final frame byte-identical to
-    C raylib (217 of 217, on Linux, desktop GLFW, OpenGL 3.3). <a href={COMPAT}>How that is checked</a>.
+    C raylib ({desktop} of {desktop}, on Linux, desktop GLFW, OpenGL 3.3). In the browser, {browser} examples are checked
+    the same way so far. <a href={`${base}compatibility/`}>How that is checked</a>.
   </p>
 
   <h2>Try it</h2>
