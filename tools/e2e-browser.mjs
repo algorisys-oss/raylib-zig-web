@@ -57,7 +57,14 @@ async function checkRuns(label, path, screenshot) {
       fail(`${label} did not start: ${await page.locator(".ex-hint").textContent()}`);
       return false;
     }
-    const shot = await page.locator(".ex-canvas").screenshot(screenshot ? { path: screenshot } : {});
+    // A heavy example on a slow CI runner (4 shared cores, CPU WebGL) can take
+    // well over the default 30 s to yield a frame; a timeout gets one retry.
+    const grab = () => page.locator(".ex-canvas").screenshot({ timeout: 90000, ...(screenshot ? { path: screenshot } : {}) });
+    const shot = await grab().catch((e) => {
+      if (!/Timeout/.test(e.message)) throw e;
+      console.log(`  slow  ${label}: screenshot timed out once, retrying`);
+      return grab();
+    });
     // Count distinct colours: a blank or failed canvas is one colour.
     const colours = await page.evaluate(async (b64) => {
       const img = new Image();
