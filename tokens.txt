@@ -14,5 +14,6 @@
 9	2026-10-16	18:07:34	18:48:13	232	296851	13273394	49127	13619604	212635942	Resume: shapes browser gate 46/46 (raygui web flags), e2e runs all demo pages, ziglang.in link
 10	2026-10-16	19:17:33	19:20:57	16	5654	1140870	3890	1150430	213786372	Pushed three repos; gh-pages 320cff6 (46 demos)
 11	2026-10-16	19:37:40	19:37:58	12	3524	874539	2891	880966	214667338	Note: raylib-zig updated in parallel (memory saved)
-12	2026-10-16	22:38:25	(in progress)	306	332991	27633728	75711	28042736	242710074	After round 2: textures 78/78 (to_image excluded), par_shapes f32 fix, fatal link warnings; gh-pages 6245362
+12	2026-10-16	22:38:25	00:05:58	320	338445	29139251	79511	29557527	244224865	After round 2: textures 78/78 (to_image excluded), par_shapes f32 fix, fatal link warnings; gh-pages 6245362
+13	2026-10-17	05:00:10	(in progress)	974	1218337	161445348	334513	162999172	407224037	Text/shaders/models/core in the browser gate (202), per-example .data, api.json; API reference, cheatsheet, getting started, compatibility, thumbnails; gh-pages f55c3ea
 # Subagents: none used.

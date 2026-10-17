@@ -195,6 +195,12 @@ place for both the build and the browser check.
   Before treating an audio diff as a bug, compare C with C.
 - **`refAllDecls` skips generic functions.** Instantiate generic API functions
   in a test.
+- **Astro drops the space before a link that starts a new template line.**
+  "the\n    <a>API</a>" renders as "theAPI". Keep the text and `<a` on one line
+  (break inside the tag instead). The e2e check does not catch this; look.
+- **raylib-zig's generator and its checked-in raylib.zig have drifted.** Use
+  `tools/gen_api.py --json` (reads the checked-in file); a full regeneration
+  would undo hand edits.
 
 ## Next steps when work starts
 

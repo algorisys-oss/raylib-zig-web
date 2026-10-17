@@ -71,8 +71,8 @@ const used = functionsUsedBy(example);
         </>
       ) : example.webExcluded ? (
         <>
-          <span class="badge warn">not run</span> This example cannot give a correct picture in a browser, in C or in
-          Zig: {example.webExcluded}.
+          <span class="badge warn">left out</span> The browser comparison does not cover this example:
+          {example.webExcluded}.
         </>
       ) : (
         <>
