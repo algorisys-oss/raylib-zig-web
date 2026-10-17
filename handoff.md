@@ -1,53 +1,51 @@
-# handoff.md — fresh-session bootstrap (written 2026-10-17 11:35 IST)
+# handoff.md — fresh-session bootstrap (written 2026-10-17 16:15 IST)
 
 > Overwritten at the end of every run (CLAUDE.md).
 
 ## 1. State right now
 
-- This repo: main pushed (1fe694a + this handoff commit). Published gh-pages
-  **928ed14** (from 1fe694a) through `tools/publish-gh-pages.sh`: 219 demos
-  (209 verified in the browser gate, 10 demo-only), 209 thumbnails, API
-  reference with raygui (11 modules, 1001 functions), cheatsheet, getting
-  started, compatibility. e2e: 219/219 example pages run, all links resolve.
-- www.ziglang.in/raylib/ serves whatever ziglang.in last copied from gh-pages
-  (it was the 46-demo build at 06:30); it updates on ziglang.in's next deploy.
-  ziglang.in's top-bar link (zig-guide `dev` 669ba42) is still not on its main.
-- raylib-zig: **4559e4b** + handoff commit, pushed. Browser gate **209**: every
-  desktop-gated example but 8 (reasons in its docs/web.md). Last full
-  ReleaseFast run covered 202; the 7 added after it pass in Debug and
-  ReleaseFast. Desktop gates unchanged since their last run (pixel 12/12,
-  apiexamples 217/217, exdiff 217/217).
+- **CI publishes the site now.** `.github/workflows/ci.yml` (push to main,
+  PRs, nightly 05:30 UTC, manual) builds from raylib-zig-port's `web-latest`
+  release and that release's commit, runs the getting-started check, astro
+  build and e2e, and on green main pushes gh-pages. First CI publish:
+  gh-pages **e0453751** (from 2c3f147), 219/219 example pages run.
+- raylib-zig-port's `.github/workflows/web.yml` (path-filtered pushes to main,
+  manual): browser gate **209/209 on GitHub's runner**, demos + frames +
+  MANIFEST uploaded to `web-latest` (~30 min per run).
+- Order when both change: push raylib-zig, wait for its run, then the site's
+  next run (push, nightly, or manual) picks up the new release.
+- This repo: main pushed up to this handoff commit. raylib-zig: 21da7ec.
+- **GitHub Pages is ON for this repo** (GitHub enabled it when gh-pages was
+  first pushed). It serves https://algorisys-oss.github.io/raylib-zig-web/,
+  a /raylib/-based build at the wrong path (broken links, duplicate content).
+  AGENTS.md says Pages stays off. Turning it off is the owner's call.
 
 ## 2. What this run did
 
-- Republished with 202 demos (c910c23), then added audio (5, compared with
-  playback stalled; docs say so) and others (2) to the gate;
-  raylib_opengl_interop excluded (desktop GL only).
-- raylib-zig `web_demos_only`: the 9 build-only examples and core_window_web
-  are built as site demos; their pages say "runs, not compared" with the
-  desktop reason.
-- raygui JSON (`gen_raygui.py --json`) and raygui in the API reference.
-- e2e: finds each example page's category instead of guessing from the name.
-- Stopped one publish before its push: an `astro build` had replaced `dist/`
-  during its check. gh-pages was not touched; the gotcha is in AGENTS.md.
+- raylib-zig: `-Draylib-examples` (or `$RAYLIB_EXAMPLES`) instead of a
+  hard-coded path; a fresh clone passes the gate; web.yml.
+- Here: ci.yml; publish-gh-pages.sh takes PUBLISH_URL and supplies a git
+  identity; rehearsed locally with CI's inputs before pushing.
+- First site CI run failed one of 219 pages (a 30 s screenshot timeout on the
+  slow runner); nothing was published. e2e now allows 90 s and one retry; the
+  next run was green and published.
+- Pushes that change only handoff.md, tokens.txt, AGENTS.md or CLAUDE.md do
+  not run the site CI.
 
 ## 3. Next step
 
-1. Owner decisions in raylib-zig's handoff: LoadDirectoryFiles on the web
-   (Zig std gap), gen_api.py full regeneration drift, wasm size growth.
-2. Phase D: CI for this repo (raylib-zig checkout + raylib 6.2 + emsdk +
-   webdemos + gate frames, astro build with BASE_PATH=/raylib/, e2e, publish
-   only from main). Until then publish by hand with the script.
-3. Audio that actually plays in the gate would need a deterministic audio
-   clock (raylib-zig side); optional.
+1. Owner: turn GitHub Pages off for this repo (Settings > Pages), or say to.
+2. Owner decisions in raylib-zig's handoff (LoadDirectoryFiles on the web,
+   gen_api.py drift, wasm size growth).
+3. Optional: raylib-zig's CI could trigger this repo's CI when it uploads a
+   release (needs a token with access to this repo); today the nightly run
+   picks it up.
 
 ## 4. Open issues
 
-- Commit 1fe694a's message lost a backtick-quoted `@import("raygui")` to the
-  shell ("through the  alias"); the code is right. Quote commit messages
-  with a heredoc when they contain backticks.
+- Zig is pinned to 0.18.0-dev.246 in both workflows. ziglang.org prunes old
+  dev builds; when it is gone, setup-zig's mirrors are the fallback, and moving
+  raylib-zig to a newer master is the real fix.
 - Astro drops the space before a link or `{expression}` that starts a new
   template line (AGENTS.md gotcha).
-- Exclusion reasons on the site come from build.zig comments (developer
-  wording).
 - Example source is shown with Shiki, not CodeMirror.

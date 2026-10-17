@@ -11,6 +11,8 @@ name: Build, check & publish
 on:
   push:
     branches: [main]
+    # Session notes do not change the site.
+    paths-ignore: [handoff.md, tokens.txt, AGENTS.md, CLAUDE.md]
   pull_request:
   schedule:
     - cron: "30 5 * * *" # 05:30 UTC: picks up raylib-zig's newest release before ziglang.in's deploy

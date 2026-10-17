@@ -16,5 +16,6 @@
 11	2026-10-16	19:37:40	19:37:58	12	3524	874539	2891	880966	214667338	Note: raylib-zig updated in parallel (memory saved)
 12	2026-10-16	22:38:25	00:05:58	320	338445	29139251	79511	29557527	244224865	After round 2: textures 78/78 (to_image excluded), par_shapes f32 fix, fatal link warnings; gh-pages 6245362
 13	2026-10-17	05:00:10	08:50:33	994	1228622	165875909	341576	167447101	411671966	Text/shaders/models/core in the browser gate (202), per-example .data, api.json; API reference, cheatsheet, getting started, compatibility, thumbnails; gh-pages f55c3ea
-14	2026-10-17	09:47:10	(in progress)	262	177103	62803315	89227	63069907	474741873	Gate 209 (audio, others), 10 demo-only examples, raygui reference; gh-pages c910c23 then 928ed14 (219 demos)
+14	2026-10-17	09:47:10	11:30:16	262	177103	62803315	89227	63069907	474741873	Gate 209 (audio, others), 10 demo-only examples, raygui reference; gh-pages c910c23 then 928ed14 (219 demos)
+15	2026-10-17	14:20:26	(in progress)	230	1666698	60332217	82349	62081494	536823367	Phase D: CI in raylib-zig (gate 209/209 on GitHub, web-latest release) and here (build, check, publish); first CI publish e045375
 # Subagents: none used.
