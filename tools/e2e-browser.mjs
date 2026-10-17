@@ -109,9 +109,16 @@ try {
     .filter((d) => d.isDirectory() && d.name.includes("_"))
     .map((d) => d.name).sort();
   let ran = 0;
+  // Example pages live at examples/<category>/<name>/; the category is not
+  // always the name's prefix (others/embedded_files_loading).
+  const pageOf = new Map();
+  for (const category of await readdir(join(dist, "examples"), { withFileTypes: true })) {
+    if (!category.isDirectory() || category.name.includes("_")) continue;
+    for (const page of await readdir(join(dist, "examples", category.name))) pageOf.set(page, category.name);
+  }
   for (const name of built) {
-    const category = name.slice(0, name.indexOf("_"));
-    if (await checkRuns(name, `examples/${category}/${name}/`)) ran++;
+    if (!pageOf.has(name)) { fail(`${name}: browser build but no example page`); continue; }
+    if (await checkRuns(name, `examples/${pageOf.get(name)}/${name}/`)) ran++;
   }
   console.log(`  OK    ${ran}/${built.length} example pages run their browser build`);
 } finally {

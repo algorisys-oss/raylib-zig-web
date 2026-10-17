@@ -2,7 +2,7 @@
 import { Code } from "astro:components";
 import Base from "../../../../layouts/Base.astro";
 import ExampleCanvas from "../../../../components/ExampleCanvas.astro";
-import { examples, type Example } from "../../../../examples";
+import { examples, hasWebBuild, type Example } from "../../../../examples";
 import { apiHref, functionsUsedBy } from "../../../../api";
 
 export function getStaticPaths() {
@@ -71,8 +71,12 @@ const used = functionsUsedBy(example);
         </>
       ) : example.webExcluded ? (
         <>
-          <span class="badge warn">left out</span> The browser comparison does not cover this example:
-          {example.webExcluded}.
+          <span class="badge warn">left out</span> The browser comparison does not cover this example: {example.webExcluded}.
+        </>
+      ) : hasWebBuild(example) && example.desktop.kind === "build-only" ? (
+        <>
+          <span class="badge muted">not compared</span> It runs in the browser above, but it is not compared with C
+          there, for the same reason as on the desktop: {example.desktop.reason}.
         </>
       ) : (
         <>
