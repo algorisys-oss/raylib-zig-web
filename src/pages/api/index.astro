@@ -16,7 +16,9 @@ const total = modules.reduce((n, m) => n + m.functions.length, 0);
     </p>
     <p>
       In Zig, a function keeps raylib's name with the first letter in lower case: <code>DrawText</code> is
-      <code>rl.drawText</code>. raymath is <code>rl.math</code> and rlgl is <code>rl.gl</code>.
+      <code>rl.drawText</code>. raymath is <code>rl.math</code>, rlgl is <code>rl.gl</code>, and raygui is a module of
+      its own, <code>@import("raygui")</code>, without the <code>Gui</code> prefix: <code>GuiButton</code> is
+      <code>gui.button</code>.
     </p>
   </div>
   <table class="modules">
@@ -35,9 +37,6 @@ const total = modules.reduce((n, m) => n + m.functions.length, 0);
       }
     </tbody>
   </table>
-  <p class="prose">
-    raygui, the immediate-mode GUI, is also available as <code>@import("raygui")</code>. It is not in this reference yet.
-  </p>
 </Base>
 
 <style>

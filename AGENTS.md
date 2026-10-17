@@ -198,6 +198,9 @@ place for both the build and the browser check.
 - **Astro drops the space before a link that starts a new template line.**
   "the\n    <a>API</a>" renders as "theAPI". Keep the text and `<a` on one line
   (break inside the tag instead). The e2e check does not catch this; look.
+- **Nothing else may build the site while `tools/publish-gh-pages.sh` runs.**
+  The script checks and then publishes `dist/`; a concurrent `astro build`
+  replaces it mid-check, and the push would ship a build the check never saw.
 - **raylib-zig's generator and its checked-in raylib.zig have drifted.** Use
   `tools/gen_api.py --json` (reads the checked-in file); a full regeneration
   would undo hand edits.

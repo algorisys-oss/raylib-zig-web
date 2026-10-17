@@ -85,7 +85,7 @@ async function checkRuns(label, path, screenshot) {
 }
 
 try {
-  const pages = ["", "getting-started/", "examples/", "api/", "api/core/", "api/math/", "cheatsheet/", "compatibility/", "about/", "examples/core/core_basic_window/", "examples/shaders/shaders_julia_set/"];
+  const pages = ["", "getting-started/", "examples/", "api/", "api/core/", "api/math/", "api/raygui/", "cheatsheet/", "compatibility/", "about/", "examples/core/core_basic_window/", "examples/shaders/shaders_julia_set/"];
   for (const p of pages) {
     const page = await browser.newPage();
     const errors = [];

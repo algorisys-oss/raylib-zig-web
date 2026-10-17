@@ -1,7 +1,7 @@
 /**
- * The API reference's data: raylib-zig's src/api/api.json, written by its
- * tools/gen_api.py from the same wrappers as the Zig API, with signatures as
- * the checked-in src/api/raylib.zig has them. Nothing here is typed by hand,
+ * The API reference's data: raylib-zig's src/api/api.json (tools/gen_api.py)
+ * and src/raygui/api.json (tools/gen_raygui.py), with signatures as the
+ * checked-in src/api/raylib.zig and src/raygui/raygui.zig have them. Nothing here is typed by hand,
  * so the reference cannot drift from the release. A missing file fails the build.
  */
 import { existsSync, readFileSync } from "node:fs";
@@ -9,13 +9,13 @@ import { join } from "node:path";
 import { RAYLIB_ZIG, examples, type Example } from "./examples";
 
 export interface ApiFunction {
-  /** raylib.h's module for the function ("core", "shapes", ...), "raymath" or "rlgl". */
+  /** raylib.h's module for the function ("core", "shapes", ...), "raymath", "rlgl" or "raygui". */
   module: string;
   /** The header's section comment above it ("Window-related functions"). */
   group: string | null;
   /** C name: `DrawText`. */
   c: string;
-  /** Zig name with its namespace: `rl.drawText`, `rl.math.vector2Add`, `rl.gl.pushMatrix`. */
+  /** Zig name with its namespace: `rl.drawText`, `rl.math.vector2Add`, `rl.gl.pushMatrix`, `gui.button`. */
   zig: string;
   zigSignature: string;
   cSignature: string;
@@ -46,15 +46,19 @@ const MODULES: { key: string; slug: string; title: string; about: string; source
   { key: "audio", slug: "audio", title: "audio", about: "Audio device, sounds, music and streams.", source: "raudio" },
   { key: "raymath", slug: "math", title: "math", about: "Vectors, matrices and quaternions (raymath, as rl.math).", source: "raymath" },
   { key: "rlgl", slug: "gl", title: "gl", about: "rlgl, raylib's OpenGL layer (as rl.gl).", source: "rlgl" },
+  { key: "raygui", slug: "raygui", title: "raygui", about: 'Immediate-mode GUI controls (as @import("raygui")).', source: "raygui" },
 ];
 
 let cache: ApiModule[] | null = null;
 
 export function apiModules(): ApiModule[] {
   if (cache) return cache;
-  const path = join(RAYLIB_ZIG, "src/api/api.json");
-  if (!existsSync(path)) throw new Error(`missing ${path} (run tools/gen_api.py --json in raylib-zig)`);
-  const { functions } = JSON.parse(readFileSync(path, "utf8")) as { functions: ApiFunction[] };
+  const functions: ApiFunction[] = [];
+  for (const [file, tool] of [["src/api/api.json", "gen_api.py"], ["src/raygui/api.json", "gen_raygui.py"]]) {
+    const path = join(RAYLIB_ZIG, file);
+    if (!existsSync(path)) throw new Error(`missing ${path} (run tools/${tool} --json in raylib-zig)`);
+    functions.push(...(JSON.parse(readFileSync(path, "utf8")) as { functions: ApiFunction[] }).functions);
+  }
   const known = new Set(MODULES.map((m) => m.key));
   const unknown = functions.find((f) => !known.has(f.module));
   if (unknown) throw new Error(`api.json: ${unknown.c} is in module "${unknown.module}", which this site does not list`);
@@ -70,13 +74,15 @@ export function apiHref(base: string, module: ApiModule, f: ApiFunction): string
 /**
  * Which API functions an example's Zig source calls. A call is `<ns>.<name>(`
  * where <ns> is `rl` (or `rl.math` / `rl.gl`) or a local alias of it, such as
- * `const rm = rl.math;`.
+ * `const rm = rl.math;`, or the name raygui is imported as (`const gui = @import("raygui");`).
  */
 function calls(source: string): Set<string> {
-  const names = { "rl.math": ["rl\\.math"], "rl.gl": ["rl\\.gl"], rl: ["rl"] } as Record<string, string[]>;
+  const names = { "rl.math": ["rl\\.math"], "rl.gl": ["rl\\.gl"], rl: ["rl"], gui: [] } as Record<string, string[]>;
   for (const [, alias, ns] of source.matchAll(/^const (\w+) = rl\.(math|gl);/gm)) names[`rl.${ns}`].push(alias);
+  for (const [, alias] of source.matchAll(/^const (\w+) = @import\("raygui"\);/gm)) names.gui.push(alias);
   const found = new Set<string>();
   for (const [ns, prefixes] of Object.entries(names)) {
+    if (prefixes.length === 0) continue;
     const re = new RegExp(`(?<![\\w.])(?:${prefixes.join("|")})\\.(\\w+)\\(`, "g");
     for (const [, name] of source.matchAll(re)) found.add(`${ns}.${name}`);
   }
