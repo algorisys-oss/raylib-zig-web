@@ -6,8 +6,8 @@ name: Build, check & publish
 # passed), and the sources, API data and gate lists come from a checkout of
 # raylib-zig-port at the commit that release names. Then the getting-started
 # project is built as a reader would, the site is built and checked in
-# headless Chrome, and on main the result is pushed to gh-pages as an orphan
-# commit. ziglang.in's deploy (06:00 UTC nightly) copies gh-pages into /raylib/.
+# headless Chrome, and on main the result is pushed to the `site` branch as an
+# orphan commit. ziglang.in's deploy (06:00 UTC nightly) copies it into /raylib/.
 on:
   push:
     branches: [main]
@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # gh-pages
+  contents: write # the site branch
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -91,10 +91,10 @@ jobs:
       # sync, getting-started check, astro build, e2e; then the push on main.
       - name: Build and check (pull requests and branches)
         if: github.ref != 'refs/heads/main'
-        run: tools/publish-gh-pages.sh --dry-run
+        run: tools/publish-site.sh --dry-run
 
-      - name: Build, check and publish gh-pages (main)
+      - name: Build, check and publish the site branch (main)
         if: github.ref == 'refs/heads/main'
         env:
           PUBLISH_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
-        run: tools/publish-gh-pages.sh
+        run: tools/publish-site.sh

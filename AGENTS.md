@@ -39,7 +39,9 @@ in this repo.
 4. **Address: www.ziglang.in/raylib** (owner, 2026-10-16). Build with
    `BASE_PATH=/raylib/` and `SITE_URL=https://www.ziglang.in` (www is
    ziglang.in's canonical host). This repo publishes `dist/` to its own
-   `gh-pages` branch (orphan commit; Pages stays **off** for this repo).
+   `site` branch (orphan commit; Pages stays **off** for this repo, which is
+   why the branch is not called `gh-pages`: GitHub enables Pages for that name
+   and refuses to disable it while it exists).
    ziglang.in (rajeshpillai/zig-guide) lists it in `web/subsites.json` and its
    deploy copies that branch into `/raylib/`, so a change here goes live on
    ziglang.in's next deploy (push to its main, or its 06:00 UTC nightly).
@@ -154,7 +156,7 @@ CI compiled.
 
 Follow ziglang.in's model (its `CLAUDE.md`, "CI and deployment"): build, run
 the browser gate, `astro build`, Playwright end-to-end check of the built
-site, then publish `dist/` to `gh-pages` as an orphan commit, only from
+site, then publish `dist/` to the `site` branch as an orphan commit, only from
 `main`, only if everything passed. `SITE_URL`/`BASE_PATH` come from one
 place for both the build and the browser check.
 
@@ -168,7 +170,7 @@ CI; this repo publishes automatically from green main):
 - This repo `.github/workflows/ci.yml` (push, PR, nightly 05:30 UTC, manual):
   downloads `web-latest`, checks out raylib-zig-port at the MANIFEST's commit
   into `.ci/raylib-zig`, clones raylib 6.2, installs the Getting started
-  page's packages, then `tools/publish-gh-pages.sh` (`--dry-run` off main).
+  page's packages, then `tools/publish-site.sh` (`--dry-run` off main).
   Zig is pinned to the same build as raylib-zig's CI.
 ## Rules
 
@@ -210,7 +212,7 @@ CI; this repo publishes automatically from green main):
 - **Astro drops the space before a link that starts a new template line.**
   "the\n    <a>API</a>" renders as "theAPI". Keep the text and `<a` on one line
   (break inside the tag instead). The e2e check does not catch this; look.
-- **Nothing else may build the site while `tools/publish-gh-pages.sh` runs.**
+- **Nothing else may build the site while `tools/publish-site.sh` runs.**
   The script checks and then publishes `dist/`; a concurrent `astro build`
   replaces it mid-check, and the push would ship a build the check never saw.
 - **raylib-zig's generator and its checked-in raylib.zig have drifted.** Use
